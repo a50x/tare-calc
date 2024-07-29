@@ -1,7 +1,297 @@
 <!DOCTYPE html>
-<html>
-<body>
-<h1>Hello World</h1>
-<p>I'm hosted with GitHub Pages.</p>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tare Calculator</title>
+<link rel="icon" type="image/x-icon" href="https://icons.duckduckgo.com/ip2/www.thecalculatorsite.com.ico">
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    font-size: 2em; /* 200% of the original size */
+    overflow: hidden; /* Prevent scrollbars due to snowfall */
+    position: relative; /* Allow z-index to work */
+  }
+  .dark-mode {
+    background-color: #333;
+    color: #fff;
+  }
+  .light-mode {
+    background-color: #fff;
+    color: #333;
+  }
+  /* Snowfall styles */
+  html, body {
+    height: 100%;
+    margin: 0; /* Remove default margin */
+  }
+  .snow, .snow:before, .snow:after {
+    position: absolute;
+    top: -600px; /* Grid size in px */
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-image: radial-gradient(
+        15px 15px at 30px 30px, 
+        rgba(255, 255, 255, 0.8) 50%,
+        rgba(0, 0, 0, 0)
+    );
+    background-size: 600px 600px; /* Grid size */
+    animation: snow 3s linear infinite;
+    content: "";
+    z-index: -1; /* Place behind other content */
+  }
+  .snow.hidden {
+    display: none; /* Hide snowfall when toggled off */
+  }
+  .snow:after {
+    margin-left: -200px; /* Half grid size */
+    opacity: .5;
+    animation-duration: 6s;
+    animation-direction: reverse;
+    filter: blur(3px);
+  }
+  .snow:before {
+    animation-duration: 9s;
+    animation-direction: reverse;
+    margin-left: -300px; /* 1.5x grid size */
+    opacity: .7;
+    filter: blur(1.5px);
+  }
+  @keyframes snow {
+    to {
+      transform: translateY(600px); /* Grid size */
+    }
+  }
+
+  /* Dark mode specific */
+  .dark-mode .snow, .dark-mode .snow:before, .dark-mode .snow:after {
+    background-image: radial-gradient(
+        15px 15px at 30px 30px, 
+        rgba(255, 255, 255, 0.8) 50%,
+        rgba(0, 0, 0, 0)
+    );
+  }
+  
+  /* Light mode specific */
+  .light-mode .snow, .light-mode .snow:before, .light-mode .snow:after {
+    background-image: radial-gradient(
+        15px 15px at 30px 30px, 
+        rgba(200, 200, 200, 0.8) 50%,
+        rgba(0, 0, 0, 0)
+    );
+  }
+
+  #toggleMode {
+    position: fixed;
+    top: 20px; /* Fixed top position */
+    right: 20px; /* Fixed right position */
+    cursor: pointer;
+    z-index: 1; /* Ensure toggle button is above snow */
+  }
+  #toggleSnow {
+    position: fixed;
+    bottom: 20px; /* Fixed bottom position */
+    left: 20px; /* Fixed left position */
+    cursor: pointer;
+    z-index: 1; /* Ensure toggle button is above snow */
+  }
+  #scaleButtons {
+    position: fixed;
+    bottom: 20px; /* Align with toggle snow text */
+    right: 20px;
+    z-index: 1; /* Ensure scale buttons are above snow */
+    display: flex;
+    align-items: center;
+  }
+  #scaleButtons button {
+    width: 60px; /* Fixed width */
+    height: 60px; /* Fixed height */
+    font-size: 1.5em; /* Larger font size */
+    line-height: 60px; /* Center text vertically */
+    text-align: center; /* Center text horizontally */
+    margin-left: 5px;
+    border: none; /* Optional: removes border */
+    cursor: pointer; /* Optional: button cursor style */
+    background-color: #555; /* Dark background for better visibility */
+    color: #fff; /* Light text color */
+  }
+  /* Dark mode button styles */
+  .dark-mode #scaleButtons button {
+    background-color: #555;
+    color: #fff;
+  }
+  /* Light mode button styles */
+  .light-mode #scaleButtons button {
+    background-color: #ddd;
+    color: #333;
+  }
+  input, select {
+    font-size: 0.8em; /* 80% of the base font size (2em), making it 20% smaller */
+    position: relative; /* Ensure inputs are above snowfall */
+    z-index: 1;
+  }
+  #result p {
+    font-size: 3em; /* 200% of the original size */
+  }
+  
+  .rainbow-text {
+    animation: rainbowBreathe 8s linear infinite;
+    -webkit-animation: rainbowBreathe 8s linear infinite; /* Safari and Chrome */
+  }
+  
+  @keyframes rainbowBreathe {
+    0% {
+      color: red;
+    }
+    15% {
+      color: orange;
+    }
+    30% {
+      color: yellow;
+    }
+    45% {
+      color: green;
+    }
+    60% {
+      color: cyan;
+    }
+    75% {
+      color: blue;
+    }
+    90% {
+      color: violet;
+    }
+    100% {
+      color: red;
+    }
+  }
+  
+  @-webkit-keyframes rainbowBreathe {
+    0% {
+      color: red;
+    }
+    15% {
+      color: orange;
+    }
+    30% {
+      color: yellow;
+    }
+    45% {
+      color: green;
+    }
+    60% {
+      color: cyan;
+    }
+    75% {
+      color: blue;
+    }
+    90% {
+      color: violet;
+    }
+    100% {
+      color: red;
+    }
+  }
+</style>
+</head>
+<body class="dark-mode">
+  <h2>Tare Calculator</h2>
+  
+  <div class="form-group">
+    <label for="totalWeight">Total Weight (g):</label>
+    <input type="number" id="totalWeight" name="totalWeight" min="0" step="0.01" required>
+  </div>
+  
+  <div class="form-group">
+    <label for="itemSelect">Select Item:</label>
+    <select id="itemSelect" name="itemSelect">
+      <option value="0">Select an item...</option>
+      <option value="1.17">Quartz Pillar with Holes (1.17g)</option>
+      <option value="10.00">OG Dab Tool (10.00g)</option>
+      <option value="22.06">Double-sided Dab Tool (22.06g)</option>
+      <option value="22.48">Flat Dab Tool (22.48g)</option>
+      <option value="42.58">Hello Mary Jar (42.58g)</option>
+      <option value="51.18">Shovelhead Bowl (51.18g)</option>
+    </select>
+  </div>
+  
+  <div id="result" style="margin-top: 20px;">
+    <p><strong id="taredWeightLabel">Tared Weight:</strong> <span id="taredWeightValue"></span></p>
+  </div>
+  
+  <div id="toggleMode">Toggle Dark/Light</div>
+  
+  <div id="toggleSnow">Toggle Snow</div>
+  
+  <div id="scaleButtons">
+    <button onclick="changeScale(-1)">−</button>
+    <button onclick="changeScale(1)">+</button>
+  </div>
+  
+  <script>
+    // Function to toggle dark and light mode
+    function toggleMode() {
+      var body = document.body;
+      body.classList.toggle('dark-mode');
+      body.classList.toggle('light-mode');
+    }
+    
+    // Function to toggle snow visibility
+    function toggleSnow() {
+      var snow = document.querySelector('.snow');
+      snow.classList.toggle('hidden');
+    }
+    
+    // Add event listener to the toggle mode button
+    document.getElementById('toggleMode').addEventListener('click', toggleMode);
+    
+    // Add event listener to the toggle snow button
+    document.getElementById('toggleSnow').addEventListener('click', toggleSnow);
+    
+    // Function to change UI scale
+    function changeScale(direction) {
+      var scaleValue = parseFloat(document.body.style.fontSize) || 2;
+      var newScale = scaleValue + direction * 0.2;
+      var newInputScale = newScale * 0.4; // Adjusted for the new base font size and input size
+      
+      document.body.style.fontSize = newScale + 'em';
+      document.querySelectorAll('input, select').forEach(function(element) {
+        element.style.fontSize = newInputScale + 'em';
+      });
+      // Update button sizes without affecting distance
+      document.querySelectorAll('#scaleButtons button').forEach(function(button) {
+        button.style.fontSize = '1.5em'; // Fixed font size for buttons
+      });
+    }
+    
+    // Function to calculate tare weight
+    function calculateTare() {
+      var totalWeight = parseFloat(document.getElementById('totalWeight').value);
+      var selectedItem = document.getElementById('itemSelect').value;
+      
+      if (selectedItem === '0') {
+        document.getElementById('taredWeightLabel').textContent = 'Tared Weight:';
+        document.getElementById('taredWeightValue').innerHTML = '';
+        return;
+      }
+      
+      var tareWeight = parseFloat(selectedItem);
+      var inputWeight = totalWeight || 0; // Use 0 if totalWeight is falsy
+      
+      var taredWeight = inputWeight - tareWeight;
+      
+      document.getElementById('taredWeightLabel').textContent = 'Tared Weight: ';
+      document.getElementById('taredWeightValue').innerHTML = `<span class="rainbow-text">${taredWeight.toFixed(2)}g</span>`;
+    }
+    
+    // Add event listener to the item select dropdown
+    document.getElementById('itemSelect').addEventListener('change', calculateTare);
+    
+    // Add event listener to the total weight input field (for live recalculation)
+    document.getElementById('totalWeight').addEventListener('input', calculateTare);
+  </script>
+  <div class="snow"></div>
 </body>
 </html>
