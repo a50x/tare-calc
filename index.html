@@ -214,7 +214,20 @@
       <option value="22.48">Flat Dab Tool (22.48g)</option>
       <option value="42.58">Hello Mary Jar (42.58g)</option>
       <option value="51.18">Shovelhead Bowl (51.18g)</option>
+      <option value="custom">Custom...</option>
     </select>
+  </div>
+  
+  <div id="customTareFields" style="display: none;">
+    <div class="form-group">
+      <label for="customName">Custom Item Name:</label>
+      <input type="text" id="customName" name="customName">
+    </div>
+    <div class="form-group">
+      <label for="customWeight">Custom Tare Weight (g):</label>
+      <input type="number" id="customWeight" name="customWeight" min="0" step="0.01">
+    </div>
+    <button onclick="saveCustomTare()">Save Tare</button>
   </div>
   
   <div id="result" style="margin-top: 20px;">
@@ -277,7 +290,12 @@
         return;
       }
       
-      var tareWeight = parseFloat(selectedItem);
+      var tareWeight;
+      if (selectedItem === 'custom') {
+        tareWeight = parseFloat(document.getElementById('customWeight').value) || 0;
+      } else {
+        tareWeight = parseFloat(selectedItem);
+      }
       var inputWeight = totalWeight || 0; // Use 0 if totalWeight is falsy
       
       var taredWeight = inputWeight - tareWeight;
@@ -287,10 +305,47 @@
     }
     
     // Add event listener to the item select dropdown
-    document.getElementById('itemSelect').addEventListener('change', calculateTare);
+    document.getElementById('itemSelect').addEventListener('change', function() {
+      var selectedItem = document.getElementById('itemSelect').value;
+      if (selectedItem === 'custom') {
+        document.getElementById('customTareFields').style.display = 'block';
+      } else {
+        document.getElementById('customTareFields').style.display = 'none';
+      }
+      calculateTare();
+    });
     
     // Add event listener to the total weight input field (for live recalculation)
     document.getElementById('totalWeight').addEventListener('input', calculateTare);
+    
+    // Load custom tares from local storage
+    function loadCustomTares() {
+      var customTares = JSON.parse(localStorage.getItem('customTares')) || [];
+      customTares.forEach(function(tare) {
+        var option = document.createElement('option');
+        option.value = tare.weight;
+        option.textContent = `${tare.name} (${tare.weight}g)`;
+        document.getElementById('itemSelect').appendChild(option);
+      });
+    }
+    
+    // Save custom tare to local storage
+    function saveCustomTare() {
+      var customName = document.getElementById('customName').value;
+      var customWeight = parseFloat(document.getElementById('customWeight').value);
+      if (customName && customWeight) {
+        var customTares = JSON.parse(localStorage.getItem('customTares')) || [];
+        customTares.push({ name: customName, weight: customWeight });
+        localStorage.setItem('customTares', JSON.stringify(customTares));
+        loadCustomTares();
+        alert('Custom tare saved!');
+      } else {
+        alert('Please enter a valid name and weight.');
+      }
+    }
+    
+    // Initialize custom tares on page load
+    window.onload = loadCustomTares;
   </script>
   <div class="snow"></div>
 </body>
