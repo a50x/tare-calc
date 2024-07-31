@@ -32,11 +32,7 @@
     left: 0;
     bottom: 0;
     right: 0;
-    background-image: radial-gradient(
-        15px 15px at 30px 30px, 
-        rgba(255, 255, 255, 0.8) 50%,
-        rgba(0, 0, 0, 0)
-    );
+    background-image: radial-gradient(15px 15px at 30px 30px, rgba(255, 255, 255, 0.8) 50%, rgba(0, 0, 0, 0));
     background-size: 600px 600px; /* Grid size */
     animation: snow 3s linear infinite;
     content: "";
@@ -64,44 +60,28 @@
       transform: translateY(600px); /* Grid size */
     }
   }
-
-  /* Dark mode specific */
-  .dark-mode .snow, .dark-mode .snow:before, .dark-mode .snow:after {
-    background-image: radial-gradient(
-        15px 15px at 30px 30px, 
-        rgba(255, 255, 255, 0.8) 50%,
-        rgba(0, 0, 0, 0)
-    );
+  .dark-mode .snow, .light-mode .snow {
+    background-image: radial-gradient(15px 15px at 30px 30px, rgba(255, 255, 255, 0.8) 50%, rgba(0, 0, 0, 0));
   }
-  
-  /* Light mode specific */
-  .light-mode .snow, .light-mode .snow:before, .light-mode .snow:after {
-    background-image: radial-gradient(
-        15px 15px at 30px 30px, 
-        rgba(200, 200, 200, 0.8) 50%,
-        rgba(0, 0, 0, 0)
-    );
+  .light-mode .snow {
+    background-image: radial-gradient(15px 15px at 30px 30px, rgba(200, 200, 200, 0.8) 50%, rgba(0, 0, 0, 0));
   }
-
-  #toggleMode {
+  #toggleMode, #toggleSnow, #scaleButtons {
     position: fixed;
+    cursor: pointer;
+    z-index: 1; /* Ensure buttons are above snow */
+  }
+  #toggleMode {
     top: 20px; /* Fixed top position */
     right: 20px; /* Fixed right position */
-    cursor: pointer;
-    z-index: 1; /* Ensure toggle button is above snow */
   }
   #toggleSnow {
-    position: fixed;
     bottom: 20px; /* Fixed bottom position */
     left: 20px; /* Fixed left position */
-    cursor: pointer;
-    z-index: 1; /* Ensure toggle button is above snow */
   }
   #scaleButtons {
-    position: fixed;
     bottom: 20px; /* Align with toggle snow text */
     right: 20px;
-    z-index: 1; /* Ensure scale buttons are above snow */
     display: flex;
     align-items: center;
   }
@@ -117,12 +97,10 @@
     background-color: #555; /* Dark background for better visibility */
     color: #fff; /* Light text color */
   }
-  /* Dark mode button styles */
   .dark-mode #scaleButtons button {
     background-color: #555;
     color: #fff;
   }
-  /* Light mode button styles */
   .light-mode #scaleButtons button {
     background-color: #ddd;
     color: #333;
@@ -135,66 +113,28 @@
   #result p {
     font-size: 3em; /* 200% of the original size */
   }
-  
   .rainbow-text {
     animation: rainbowBreathe 8s linear infinite;
     -webkit-animation: rainbowBreathe 8s linear infinite; /* Safari and Chrome */
   }
-  
   @keyframes rainbowBreathe {
-    0% {
-      color: red;
-    }
-    15% {
-      color: orange;
-    }
-    30% {
-      color: yellow;
-    }
-    45% {
-      color: green;
-    }
-    60% {
-      color: cyan;
-    }
-    75% {
-      color: blue;
-    }
-    90% {
-      color: violet;
-    }
-    100% {
-      color: red;
-    }
+    0%, 100% { color: red; }
+    15% { color: orange; }
+    30% { color: yellow; }
+    45% { color: green; }
+    60% { color: cyan; }
+    75% { color: blue; }
+    90% { color: violet; }
   }
-  
   @-webkit-keyframes rainbowBreathe {
-    0% {
-      color: red;
-    }
-    15% {
-      color: orange;
-    }
-    30% {
-      color: yellow;
-    }
-    45% {
-      color: green;
-    }
-    60% {
-      color: cyan;
-    }
-    75% {
-      color: blue;
-    }
-    90% {
-      color: violet;
-    }
-    100% {
-      color: red;
-    }
+    0%, 100% { color: red; }
+    15% { color: orange; }
+    30% { color: yellow; }
+    45% { color: green; }
+    60% { color: cyan; }
+    75% { color: blue; }
+    90% { color: violet; }
   }
-
   /* Media query for portrait mode (mobile optimization) */
   @media (orientation: portrait) {
     body {
@@ -263,7 +203,6 @@
   </div>
   
   <div id="toggleMode">Toggle Dark/Light</div>
-  
   <div id="toggleSnow">Toggle Snow</div>
   
   <div id="scaleButtons">
@@ -272,97 +211,57 @@
   </div>
   
   <script>
-    // Function to toggle dark and light mode
     function toggleMode() {
-      var body = document.body;
-      body.classList.toggle('dark-mode');
-      body.classList.toggle('light-mode');
+      document.body.classList.toggle('dark-mode');
+      document.body.classList.toggle('light-mode');
     }
     
-    // Function to toggle snow visibility
     function toggleSnow() {
-      var snow = document.querySelector('.snow');
-      snow.classList.toggle('hidden');
+      document.querySelector('.snow').classList.toggle('hidden');
     }
     
-    // Add event listener to the toggle mode button
-    document.getElementById('toggleMode').addEventListener('click', toggleMode);
-    
-    // Add event listener to the toggle snow button
-    document.getElementById('toggleSnow').addEventListener('click', toggleSnow);
-    
-    // Function to change UI scale
     function changeScale(direction) {
-      var scaleValue = parseFloat(document.body.style.fontSize) || 2;
-      var newScale = scaleValue + direction * 0.2;
-      var newInputScale = newScale * 0.4; // Adjusted for the new base font size and input size
+      const scaleValue = parseFloat(document.body.style.fontSize) || 2;
+      const newScale = scaleValue + direction * 0.2;
+      const newInputScale = newScale * 0.4;
       
-      document.body.style.fontSize = newScale + 'em';
-      document.querySelectorAll('input, select').forEach(function(element) {
-        element.style.fontSize = newInputScale + 'em';
+      document.body.style.fontSize = `${newScale}em`;
+      document.querySelectorAll('input, select').forEach(element => {
+        element.style.fontSize = `${newInputScale}em`;
       });
-      // Update button sizes without affecting distance
-      document.querySelectorAll('#scaleButtons button').forEach(function(button) {
+      document.querySelectorAll('#scaleButtons button').forEach(button => {
         button.style.fontSize = '1.5em'; // Fixed font size for buttons
       });
     }
     
-    // Function to calculate tare weight
     function calculateTare() {
-      var totalWeight = parseFloat(document.getElementById('totalWeight').value);
-      var selectedItem = document.getElementById('itemSelect').value;
+      const totalWeight = parseFloat(document.getElementById('totalWeight').value) || 0;
+      const selectedItem = document.getElementById('itemSelect').value;
+      const tareWeight = selectedItem === 'custom' ?
+        parseFloat(document.getElementById('customWeight').value) || 0 :
+        parseFloat(selectedItem);
       
-      if (selectedItem === '0') {
-        document.getElementById('taredWeightLabel').textContent = 'Tared Weight:';
-        document.getElementById('taredWeightValue').innerHTML = '';
-        return;
-      }
-      
-      var tareWeight;
-      if (selectedItem === 'custom') {
-        tareWeight = parseFloat(document.getElementById('customWeight').value) || 0;
-      } else {
-        tareWeight = parseFloat(selectedItem);
-      }
-      var inputWeight = totalWeight || 0; // Use 0 if totalWeight is falsy
-      
-      var taredWeight = inputWeight - tareWeight;
+      const taredWeight = totalWeight - tareWeight;
       
       document.getElementById('taredWeightLabel').textContent = 'Tared Weight: ';
       document.getElementById('taredWeightValue').innerHTML = `<span class="rainbow-text">${taredWeight.toFixed(2)}g</span>`;
     }
     
-    // Add event listener to the item select dropdown
-    document.getElementById('itemSelect').addEventListener('change', function() {
-      var selectedItem = document.getElementById('itemSelect').value;
-      if (selectedItem === 'custom') {
-        document.getElementById('customTareFields').style.display = 'block';
-      } else {
-        document.getElementById('customTareFields').style.display = 'none';
-      }
-      calculateTare();
-    });
-    
-    // Add event listener to the total weight input field (for live recalculation)
-    document.getElementById('totalWeight').addEventListener('input', calculateTare);
-    
-    // Load custom tares from local storage
     function loadCustomTares() {
-      var customTares = JSON.parse(localStorage.getItem('customTares')) || [];
-      customTares.forEach(function(tare) {
-        var option = document.createElement('option');
+      const customTares = JSON.parse(localStorage.getItem('customTares')) || [];
+      customTares.forEach(tare => {
+        const option = document.createElement('option');
         option.value = tare.weight;
         option.textContent = `${tare.name} (${tare.weight}g)`;
         document.getElementById('itemSelect').appendChild(option);
       });
     }
     
-    // Save custom tare to local storage
     function saveCustomTare() {
-      var customName = document.getElementById('customName').value;
-      var customWeight = parseFloat(document.getElementById('customWeight').value);
+      const customName = document.getElementById('customName').value;
+      const customWeight = parseFloat(document.getElementById('customWeight').value);
       if (customName && customWeight) {
-        var customTares = JSON.parse(localStorage.getItem('customTares')) || [];
+        const customTares = JSON.parse(localStorage.getItem('customTares')) || [];
         customTares.push({ name: customName, weight: customWeight });
         localStorage.setItem('customTares', JSON.stringify(customTares));
         loadCustomTares();
@@ -373,7 +272,16 @@
     }
     
     // Initialize custom tares on page load
-    window.onload = loadCustomTares;
+    window.onload = () => {
+      loadCustomTares();
+      document.getElementById('toggleMode').addEventListener('click', toggleMode);
+      document.getElementById('toggleSnow').addEventListener('click', toggleSnow);
+      document.getElementById('itemSelect').addEventListener('change', function() {
+        document.getElementById('customTareFields').style.display = this.value === 'custom' ? 'block' : 'none';
+        calculateTare();
+      });
+      document.getElementById('totalWeight').addEventListener('input', calculateTare);
+    };
   </script>
   <div class="snow"></div>
 </body>
