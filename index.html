@@ -194,6 +194,34 @@
       color: red;
     }
   }
+
+  /* Media query for portrait mode (mobile optimization) */
+  @media (orientation: portrait) {
+    body {
+      font-size: 1.5em; /* Reduce font size for better readability on smaller screens */
+      padding: 10px; /* Less padding on smaller screens */
+    }
+    #toggleMode, #toggleSnow, #scaleButtons {
+      width: 100%;
+      position: static; /* Position buttons relative, stacking them */
+      margin-bottom: 10px; /* Add spacing between buttons */
+    }
+    #scaleButtons {
+      flex-direction: column; /* Stack buttons vertically */
+      align-items: flex-start; /* Align buttons to the start */
+    }
+    #scaleButtons button {
+      width: 100%; /* Buttons take full width */
+      margin-left: 0; /* Remove margin */
+      margin-bottom: 10px; /* Add margin-bottom */
+    }
+    input, select {
+      font-size: 0.7em; /* Smaller input size for mobile */
+    }
+    #result p {
+      font-size: 2em; /* Smaller result text size for mobile */
+    }
+  }
 </style>
 </head>
 <body class="dark-mode">
