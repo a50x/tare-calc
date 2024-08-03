@@ -239,9 +239,11 @@
       const tareWeight = selectedItem === 'custom' ?
         parseFloat(document.getElementById('customWeight').value) || 0 :
         parseFloat(selectedItem);
-      
-      const taredWeight = totalWeight - tareWeight;
-      
+
+      // Use a small epsilon to handle precision issues
+      const epsilon = 0.0001;
+      const taredWeight = Math.round((totalWeight - tareWeight + epsilon) * 100) / 100;
+
       document.getElementById('taredWeightLabel').textContent = 'Tared Weight: ';
       document.getElementById('taredWeightValue').innerHTML = `<span class="rainbow-text">${taredWeight.toFixed(2)}g</span>`;
     }
